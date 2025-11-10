@@ -1,0 +1,4 @@
+C:\Workspaces_NXP\Audio\digital_led\drivers/fsl_clock.h:1489:20:CLOCK_EnableClock	24	static
+C:\Workspaces_NXP\Audio\digital_led\drivers/fsl_port.h:360:20:PORT_SetPinConfig	32	static
+../board/pin_mux.c:36:6:BOARD_InitBootPins	8	static
+../board/pin_mux.c:62:6:BOARD_InitPins	24	static

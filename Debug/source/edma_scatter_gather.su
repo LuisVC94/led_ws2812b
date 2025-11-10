@@ -1,0 +1,11 @@
+C:\Workspaces_NXP\Audio\digital_led\drivers/fsl_gpio.h:224:20:GPIO_EnablePinControlNonSecure	16	static
+C:\Workspaces_NXP\Audio\digital_led\drivers/fsl_gpio.h:246:20:GPIO_EnablePinControlNonPrivilege	16	static
+C:\Workspaces_NXP\Audio\digital_led\drivers/fsl_edma.h:705:20:EDMA_SetChannelMux	24	static
+C:\Workspaces_NXP\Audio\digital_led\drivers/fsl_ctimer.h:497:20:CTIMER_StartTimer	16	static
+C:\Workspaces_NXP\Audio\digital_led\drivers/fsl_ctimer.h:507:20:CTIMER_StopTimer	16	static
+../source/edma_scatter_gather.c:43:6:EDMA_Callback	24	static
+../source/edma_scatter_gather.c:60:5:main	16	static
+../source/edma_scatter_gather.c:92:6:DMA_init	80	static
+../source/edma_scatter_gather.c:108:6:ctimer_init	64	static
+../source/edma_scatter_gather.c:129:6:DMA_set_transfer	96	static
+../source/edma_scatter_gather.c:145:6:led_array_fill_array_color	24	static

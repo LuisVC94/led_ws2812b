@@ -1,0 +1,7 @@
+../source/led_WS2812B.c:6:6:led_ws2812B_init	4	static
+../source/led_WS2812B.c:11:6:led_ws2812b_low_bit	16	static
+../source/led_WS2812B.c:18:6:led_ws2812b_high_bit	16	static
+../source/led_WS2812B.c:25:6:led_ws2812b_fill_array_rainbow	24	static
+../source/led_WS2812B.c:48:6:led_ws2812b_fill_array_colors	24	static
+../source/led_WS2812B.c:75:6:led_ws2812b_prepare_buff	40	static
+../source/led_WS2812B.c:101:11:led_ws2812b_get_buff_ptr	4	static
