@@ -127,7 +127,7 @@ void lptmr_init(void)
 
 	LPTMR_GetDefaultConfig(&lptmrConfig);
     LPTMR_Init(LPTMR0, &lptmrConfig);
-    LPTMR_SetTimerPeriod(LPTMR0, USEC_TO_COUNT(16666, 16000)); // 60Hz
+    LPTMR_SetTimerPeriod(LPTMR0, USEC_TO_COUNT(16000, 16000)); // 60Hz
     LPTMR_EnableInterrupts(LPTMR0, kLPTMR_TimerInterruptEnable);
     EnableIRQ(LPTMR0_IRQn);
     LPTMR_StartTimer(LPTMR0);

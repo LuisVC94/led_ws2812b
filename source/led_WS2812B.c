@@ -29,16 +29,16 @@ void led_ws2812b_fill_array_rainbow(led_ws2812b_rgb_t rgb_array[N_LEDS], uint8_t
 	counter = step;
 	for(pixel = 0; pixel < N_LEDS; pixel ++)
 	{
-		if(counter <= 75)
+		if(counter <= (N_LEDS/2))
 		{
-			val = counter * 3;
+			val = counter * (255/N_LEDS*2);
 			rgb_array[pixel].r = (uint8_t)225-val;
 			rgb_array[pixel].g = (uint8_t)val;
 			rgb_array[pixel].b = 0;
 		}
 		else
 		{
-			val = (counter-75) * 3;
+			val = (counter-(N_LEDS/2)) * (255/N_LEDS*2);
 			rgb_array[pixel].r = 0;
 			rgb_array[pixel].g = (uint8_t)225-val;
 			rgb_array[pixel].b = (uint8_t)val;
