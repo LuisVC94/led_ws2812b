@@ -22,53 +22,41 @@ void led_ws2812b_high_bit(uint32_t *buff)
 	buff[2] = GPIO_TOGGLE_MASK;
 }
 
-void led_ws2812b_fill_array_rainbow(led_ws2812b_rgb_t rgb_array[N_LEDS])
+void led_ws2812b_fill_array_rainbow(led_ws2812b_rgb_t rgb_array[N_LEDS], uint8_t step)
 {
-	uint32_t pixel, val;
+	uint32_t pixel, counter, val;
 
+	counter = step;
 	for(pixel = 0; pixel < N_LEDS; pixel ++)
 	{
-		if(pixel <= 75)
+		if(counter <= 75)
 		{
-			val = pixel * 3;
+			val = counter * 3;
 			rgb_array[pixel].r = (uint8_t)225-val;
 			rgb_array[pixel].g = (uint8_t)val;
 			rgb_array[pixel].b = 0;
 		}
 		else
 		{
-			val = (pixel-75) * 3;
+			val = (counter-75) * 3;
 			rgb_array[pixel].r = 0;
 			rgb_array[pixel].g = (uint8_t)225-val;
 			rgb_array[pixel].b = (uint8_t)val;
 		}
+
+    	counter = (counter < N_LEDS)? (counter + 1):0;
 	}
 }
 
-void led_ws2812b_fill_array_colors(led_ws2812b_rgb_t rgb_array[N_LEDS])
+void led_ws2812b_fill_array_colors(led_ws2812b_rgb_t rgb_array[N_LEDS], led_ws2812b_rgb_t color)
 {
 	uint32_t pixel;
 
 	for(pixel = 0; pixel < N_LEDS; pixel ++)
 	{
-		if(pixel%2 == 0)
-		{
-			rgb_array[pixel].r = 225;
-			rgb_array[pixel].g = 0;
-			rgb_array[pixel].b = 0;
-		}
-		else if(pixel%3 == 0)
-		{
-			rgb_array[pixel].r = 0;
-			rgb_array[pixel].g = 225;
-			rgb_array[pixel].b = 0;
-		}
-		else
-		{
-			rgb_array[pixel].r = 0;
-			rgb_array[pixel].g = 0;
-			rgb_array[pixel].b = 225;
-		}
+		rgb_array[pixel].r = color.r;
+		rgb_array[pixel].g = color.g;
+		rgb_array[pixel].b = color.b;
 	}
 }
 

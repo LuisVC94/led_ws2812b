@@ -31,8 +31,8 @@ void led_ws2812b_prepare_buff(led_ws2812b_rgb_t rgb_array[N_LEDS]);
 
 uint32_t *led_ws2812b_get_buff_ptr(void);
 
-void led_ws2812b_fill_array_rainbow(led_ws2812b_rgb_t rgb_array[N_LEDS]);
+void led_ws2812b_fill_array_rainbow(led_ws2812b_rgb_t rgb_array[N_LEDS], uint8_t step);
 
-void led_ws2812b_fill_array_colors(led_ws2812b_rgb_t rgb_array[N_LEDS]);
+void led_ws2812b_fill_array_colors(led_ws2812b_rgb_t rgb_array[N_LEDS], led_ws2812b_rgb_t color);
 
 #endif /* LED_WS2812B_H_ */

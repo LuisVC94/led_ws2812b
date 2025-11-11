@@ -21,6 +21,8 @@ void BOARD_InitHardware(void)
     CLOCK_SetClkDiv(kCLOCK_DivCtimer0Clk, 1u);
     CLOCK_AttachClk(kFRO_HF_to_CTIMER0);
 
+    CLOCK_SetupClk16KClocking(kCLOCK_Clk16KToVsys);
+
     BOARD_InitPins();
     BOARD_InitBootClocks();
     BOARD_InitDebugConsole();

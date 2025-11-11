@@ -4,18 +4,18 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
-../source/edma_scatter_gather.c \
 ../source/led_WS2812B.c \
+../source/main.c \
 ../source/semihost_hardfault.c 
 
 C_DEPS += \
-./source/edma_scatter_gather.d \
 ./source/led_WS2812B.d \
+./source/main.d \
 ./source/semihost_hardfault.d 
 
 OBJS += \
-./source/edma_scatter_gather.o \
 ./source/led_WS2812B.o \
+./source/main.o \
 ./source/semihost_hardfault.o 
 
 
@@ -31,7 +31,7 @@ source/%.o: ../source/%.c source/subdir.mk
 clean: clean-source
 
 clean-source:
-	-$(RM) ./source/edma_scatter_gather.d ./source/edma_scatter_gather.o ./source/led_WS2812B.d ./source/led_WS2812B.o ./source/semihost_hardfault.d ./source/semihost_hardfault.o
+	-$(RM) ./source/led_WS2812B.d ./source/led_WS2812B.o ./source/main.d ./source/main.o ./source/semihost_hardfault.d ./source/semihost_hardfault.o
 
 .PHONY: clean-source
 
