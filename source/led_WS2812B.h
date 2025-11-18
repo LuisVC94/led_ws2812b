@@ -4,7 +4,7 @@
 
 #include <stdint.h>
 
-#define N_LEDS 			150
+#define N_LEDS 			283
 #define	COLOR_BITS 		8
 #define COLORS 			3
 
@@ -31,7 +31,7 @@ void led_ws2812b_prepare_buff(led_ws2812b_rgb_t rgb_array[N_LEDS]);
 
 uint32_t *led_ws2812b_get_buff_ptr(void);
 
-void led_ws2812b_fill_array_rainbow(led_ws2812b_rgb_t rgb_array[N_LEDS], uint8_t step);
+void led_ws2812b_fill_array_rainbow(led_ws2812b_rgb_t rgb_array[N_LEDS], uint32_t step, uint8_t intensity);
 
 void led_ws2812b_fill_array_colors(led_ws2812b_rgb_t rgb_array[N_LEDS], led_ws2812b_rgb_t color);
 

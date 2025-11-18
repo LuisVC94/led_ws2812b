@@ -63,7 +63,7 @@ void led_array_fill_array_color(led_ws2812b_rgb_t pixel);
 int main(void)
 {
 	state_machine_efects_t state = k_state_machine_efect_breathing;
-	uint8_t counter = 0;
+	uint32_t counter = 0;
 	uint32_t div = 0;
 	led_ws2812b_rgb_t color;
     BOARD_InitHardware();
@@ -91,7 +91,7 @@ int main(void)
         	    led_ws2812b_prepare_buff(g_led_array);
         		DMA_set_transfer();
         	    CTIMER_StartTimer(CTIMER0);
-        	    led_ws2812b_fill_array_rainbow(g_led_array, counter);
+        	    led_ws2812b_fill_array_rainbow(g_led_array, counter, 75);
     	    	counter = (counter < N_LEDS)? (counter + 1):0;
         	    div = 0;
     	    }
@@ -127,7 +127,7 @@ void lptmr_init(void)
 
 	LPTMR_GetDefaultConfig(&lptmrConfig);
     LPTMR_Init(LPTMR0, &lptmrConfig);
-    LPTMR_SetTimerPeriod(LPTMR0, USEC_TO_COUNT(16000, 16000)); // 60Hz
+    LPTMR_SetTimerPeriod(LPTMR0, USEC_TO_COUNT(20000, 16000)); // 60Hz
     LPTMR_EnableInterrupts(LPTMR0, kLPTMR_TimerInterruptEnable);
     EnableIRQ(LPTMR0_IRQn);
     LPTMR_StartTimer(LPTMR0);
