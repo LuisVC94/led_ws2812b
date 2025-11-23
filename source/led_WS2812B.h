@@ -4,7 +4,7 @@
 
 #include <stdint.h>
 
-#define N_LEDS 			283
+#define N_LEDS 			150
 #define	COLOR_BITS 		8
 #define COLORS 			3
 
@@ -31,8 +31,32 @@ void led_ws2812b_prepare_buff(led_ws2812b_rgb_t rgb_array[N_LEDS]);
 
 uint32_t *led_ws2812b_get_buff_ptr(void);
 
-void led_ws2812b_fill_array_rainbow(led_ws2812b_rgb_t rgb_array[N_LEDS], uint32_t step, uint8_t intensity);
+void led_ws2812b_fill_array_rainbow(			led_ws2812b_rgb_t rgb_array[N_LEDS],
+												uint32_t step,
+												uint8_t intensity);
 
-void led_ws2812b_fill_array_colors(led_ws2812b_rgb_t rgb_array[N_LEDS], led_ws2812b_rgb_t color);
+
+void led_ws2812b_fill_array_with_pattern(		led_ws2812b_rgb_t rgb_array[N_LEDS],
+												uint32_t step,
+												led_ws2812b_rgb_t *pattern_colors,
+												uint32_t n_colors,
+												uint32_t *repeat_each_color,
+												uint8_t isCyclic,
+												uint8_t leftStart,
+												uint8_t intensity);
+
+void led_ws2812b_fill_array_with_mirror_pattern(led_ws2812b_rgb_t rgb_array[N_LEDS],
+												uint32_t step,
+												led_ws2812b_rgb_t *pattern_colors,
+												uint32_t n_colors,
+												uint32_t *repeat_each_color,
+												uint8_t isCyclic,
+												uint8_t centerStart,
+												uint8_t intensity);
+
+
+void led_ws2812b_fill_array_colors(				led_ws2812b_rgb_t rgb_array[N_LEDS],
+												led_ws2812b_rgb_t color,
+												uint8_t intensity);
 
 #endif /* LED_WS2812B_H_ */

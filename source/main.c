@@ -11,7 +11,7 @@
  * Definitions
  ******************************************************************************/
 #define TCD_QUEUE_SIZE   1U
-#define EFFECT_DIV		 0
+#define EFFECT_DIV		 10
 /*******************************************************************************
  * Prototypes
  ******************************************************************************/
@@ -20,6 +20,8 @@ typedef enum _state_machine_efects_t
 {
 	k_state_machine_efect_breathing,
 	k_state_machine_efect_rainbow,
+	k_state_machine_efect_pattern,
+	k_state_machine_efect_mirror_pattern,
 	k_state_machine_efect_run,
 	k_state_machine_efect_kitt,
 } state_machine_efects_t;
@@ -58,7 +60,103 @@ void ctimer_init(void);
 
 void DMA_set_transfer(void);
 
-void led_array_fill_array_color(led_ws2812b_rgb_t pixel);
+
+void rainbow_effect(void)
+{
+	static uint32_t step = 0;
+
+    led_ws2812b_fill_array_rainbow(g_led_array, step, 255);
+	step = (step < N_LEDS-1)? (step + 1):0;
+}
+
+void go_back_read_white_effect(void)
+{
+	const led_ws2812b_rgb_t color[] =
+	{
+			{.r = 255, .g = 255, .b = 255},
+			{.r = 255, .g = 0, .b = 0}
+	};
+	const uint32_t color_repeat[] =
+	{
+			20,
+			55
+	};
+	static uint32_t step = 0;
+	static uint8_t state = 0;
+
+	led_ws2812b_fill_array_with_mirror_pattern( g_led_array,
+												step,
+												(led_ws2812b_rgb_t*)color,
+												2,
+												(uint32_t*)color_repeat,
+												0,
+												1,
+												255);
+	if(state)
+	{
+		step ++;
+		state = (step >= (N_LEDS/2-1))? (!state):state;
+	}
+	else
+	{
+		step --;
+		state = (step <= 0)? (!state):state;
+	}
+}
+
+void cyclic_read_withe_effect(void)
+{
+	const led_ws2812b_rgb_t color[] =
+	{
+			{.r = 255, .g = 255, .b = 255},
+			{.r = 255, .g = 0, .b = 0}
+	};
+	const uint32_t color_repeat[] =
+	{
+			20,
+			55
+	};
+	static uint32_t step = 0;
+
+	led_ws2812b_fill_array_with_mirror_pattern( g_led_array,
+												step,
+												(led_ws2812b_rgb_t*)color,
+												2,
+												(uint32_t*)color_repeat,
+												1,
+												1,
+												255);
+	step = (step >= (N_LEDS/2-1))? 0:(step + 1);
+}
+
+void cyclic_red_green_blue_withe_effect(void)
+{
+	const led_ws2812b_rgb_t color[] =
+	{
+			{.r = 255, .g = 0, .b = 0},
+			{.r = 0, .g = 255, .b = 0},
+			{.r = 0, .g = 0, .b = 255}
+	};
+	const uint32_t color_repeat[] =
+	{
+			2,
+			2,
+			2
+	};
+	static uint32_t step = 0;
+
+	led_ws2812b_fill_array_with_mirror_pattern( g_led_array,
+												step,
+												(led_ws2812b_rgb_t*)color,
+												3,
+												(uint32_t*)color_repeat,
+												1,
+												1,
+												255);
+	step = (step >= (N_LEDS/2-1))? 0:(step + 1);
+}
+
+
 
 int main(void)
 {
@@ -79,8 +177,7 @@ int main(void)
     color.g = 0;
     color.r = 0;
 
-
-    led_ws2812b_fill_array_colors(g_led_array, color);
+    led_ws2812b_fill_array_colors(g_led_array, color, 0);
 
     while(1)
     {
@@ -91,8 +188,10 @@ int main(void)
         	    led_ws2812b_prepare_buff(g_led_array);
         		DMA_set_transfer();
         	    CTIMER_StartTimer(CTIMER0);
-        	    led_ws2812b_fill_array_rainbow(g_led_array, counter, 75);
-    	    	counter = (counter < N_LEDS)? (counter + 1):0;
+        	    //rainbow_effect();
+        	    //go_back_read_white_effect();
+        	    //cyclic_read_withe_effect();
+       	        cyclic_red_green_blue_withe_effect();
         	    div = 0;
     	    }
     	    else
@@ -169,17 +268,6 @@ void DMA_set_transfer(void)
 
     EDMA_SubmitTransfer(&g_EDMA_Handle, &transferConfig);
     EDMA_StartTransfer(&g_EDMA_Handle);
-}
-
-void led_array_fill_array_color(led_ws2812b_rgb_t pixel)
-{
-	uint32_t led;
-	for(led = 0; led < N_LEDS; led ++)
-	{
-		g_led_array[led].r = pixel.r;
-		g_led_array[led].g = pixel.g;
-		g_led_array[led].b = pixel.b;
-	}
 }
 
 void LPTMR0_IRQHandler(void)

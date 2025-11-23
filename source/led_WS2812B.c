@@ -22,8 +22,11 @@ void led_ws2812b_high_bit(uint32_t *buff)
 	buff[2] = GPIO_TOGGLE_MASK;
 }
 
-void led_ws2812b_fill_array_rainbow(led_ws2812b_rgb_t rgb_array[N_LEDS], uint32_t step, uint8_t intensity)
+void led_ws2812b_fill_array_rainbow(	led_ws2812b_rgb_t rgb_array[N_LEDS],
+										uint32_t step,
+										uint8_t intensity)
 {
+	float led_intensity  = (float)intensity/255.0;
 	float led_scale 	 = 3.0*255.0/N_LEDS;
 
 	float first_section  = N_LEDS/3.0;
@@ -69,22 +72,137 @@ void led_ws2812b_fill_array_rainbow(led_ws2812b_rgb_t rgb_array[N_LEDS], uint32_
 			green_value = 0.0;
 			blue_value  = 255 - aux_val;
 		}
-		rgb_array[pixel].r = red_value;
-		rgb_array[pixel].g = green_value;
-		rgb_array[pixel].b = blue_value;
-		counter = (counter >= N_LEDS)? 0:(counter + 1);
+		rgb_array[pixel].r = (uint8_t)(red_value   * led_intensity);
+		rgb_array[pixel].g = (uint8_t)(green_value * led_intensity);
+		rgb_array[pixel].b = (uint8_t)(blue_value  * led_intensity);
+		counter = (counter >= (N_LEDS-1))? 0:(counter + 1);
 	}
 }
 
-void led_ws2812b_fill_array_colors(led_ws2812b_rgb_t rgb_array[N_LEDS], led_ws2812b_rgb_t color)
+
+void led_ws2812b_fill_array_with_pattern(	led_ws2812b_rgb_t rgb_array[N_LEDS],
+											uint32_t step,
+											led_ws2812b_rgb_t *pattern_colors,
+											uint32_t n_colors,
+											uint32_t *repeat_each_color,
+											uint8_t isCyclic,
+											uint8_t leftStart,
+											uint8_t intensity)
 {
+	float led_intensity  = (float)intensity/255.0;
+	uint32_t pixel;
+	uint32_t counter;
+	uint32_t color_counter;
+	uint32_t repeat_counter;
+
+	step = (step > (N_LEDS-1))? 0:step;
+	counter = step;
+	color_counter = 0;
+	repeat_counter = 0;
+
+	for(pixel = 0; pixel < N_LEDS; pixel ++)
+	{
+		if(isCyclic ||
+		  (leftStart 		&& (((N_LEDS-1)-counter) > step)) ||
+		  ((!leftStart) 	&& (counter > step)))
+		{
+			rgb_array[counter].r = ((float)pattern_colors[color_counter].r*led_intensity);
+			rgb_array[counter].g = ((float)pattern_colors[color_counter].g*led_intensity);
+			rgb_array[counter].b = ((float)pattern_colors[color_counter].b*led_intensity);
+		}
+		else
+		{
+			rgb_array[counter].r = 0;
+			rgb_array[counter].g = 0;
+			rgb_array[counter].b = 0;
+		}
+
+		if(repeat_counter >= repeat_each_color[color_counter])
+		{
+			color_counter = (color_counter < n_colors-1)? (color_counter + 1):0;
+			repeat_counter = 0;
+		}
+		else
+		{
+			repeat_counter ++;
+		}
+		counter = (counter < (N_LEDS-1))? (counter + 1):0;
+	}
+}
+
+void led_ws2812b_fill_array_with_mirror_pattern(led_ws2812b_rgb_t rgb_array[N_LEDS],
+												uint32_t step,
+												led_ws2812b_rgb_t *pattern_colors,
+												uint32_t n_colors,
+												uint32_t *repeat_each_color,
+												uint8_t isCyclic,
+												uint8_t centerStart,
+												uint8_t intensity)
+{
+	float led_intensity  = (float)intensity/255.0;
+	uint32_t pixel;
+	uint32_t up_counter;
+	uint32_t down_counter;
+	uint32_t color_counter;
+	uint32_t repeat_counter;
+
+	step = (step > ((N_LEDS/2)-1))? 0:step;
+
+	up_counter   = ((N_LEDS/2)-1)+step;
+	down_counter = ((N_LEDS/2)-1)-step;
+	color_counter = 0;
+	repeat_counter = 0;
+
+	for(pixel = 0; pixel < (N_LEDS/2); pixel ++)
+	{
+		if(isCyclic ||
+		  (centerStart 		&& ((((N_LEDS/2)-1)-down_counter) > step)) ||
+		  ((!centerStart) 	&& (down_counter > step)))
+		{
+			rgb_array[up_counter].r 	= ((float)pattern_colors[color_counter].r*led_intensity);
+			rgb_array[up_counter].g 	= ((float)pattern_colors[color_counter].g*led_intensity);
+			rgb_array[up_counter].b 	= ((float)pattern_colors[color_counter].b*led_intensity);
+			rgb_array[down_counter].r 	= ((float)pattern_colors[color_counter].r*led_intensity);
+			rgb_array[down_counter].g 	= ((float)pattern_colors[color_counter].g*led_intensity);
+			rgb_array[down_counter].b 	= ((float)pattern_colors[color_counter].b*led_intensity);
+		}
+		else
+		{
+			rgb_array[up_counter].r 	= 0;
+			rgb_array[up_counter].g 	= 0;
+			rgb_array[up_counter].b 	= 0;
+			rgb_array[down_counter].r 	= 0;
+			rgb_array[down_counter].g 	= 0;
+			rgb_array[down_counter].b 	= 0;
+		}
+
+		if(repeat_counter >= repeat_each_color[color_counter])
+		{
+			color_counter = (color_counter < n_colors-1)? (color_counter + 1):0;
+			repeat_counter = 0;
+		}
+		else
+		{
+			repeat_counter ++;
+		}
+		up_counter   = (up_counter < (N_LEDS-1))? 	(up_counter + 1):	((N_LEDS/2)-1);
+		down_counter = (down_counter > 0)? 	     	(down_counter - 1):	((N_LEDS/2)-1);
+	}
+}
+
+
+void led_ws2812b_fill_array_colors(	led_ws2812b_rgb_t rgb_array[N_LEDS],
+									led_ws2812b_rgb_t color,
+									uint8_t intensity)
+{
+	float led_intensity  = (float)intensity/255.0;
 	uint32_t pixel;
 
 	for(pixel = 0; pixel < N_LEDS; pixel ++)
 	{
-		rgb_array[pixel].r = color.r;
-		rgb_array[pixel].g = color.g;
-		rgb_array[pixel].b = color.b;
+		rgb_array[pixel].r = (uint8_t)((float)color.r * led_intensity);
+		rgb_array[pixel].g = (uint8_t)((float)color.g * led_intensity);
+		rgb_array[pixel].b = (uint8_t)((float)color.b * led_intensity);
 	}
 }
 
