@@ -24,30 +24,55 @@ void led_ws2812b_high_bit(uint32_t *buff)
 
 void led_ws2812b_fill_array_rainbow(led_ws2812b_rgb_t rgb_array[N_LEDS], uint32_t step, uint8_t intensity)
 {
-	uint32_t pixel, counter, val, max_val;
+	float led_scale 	 = 3.0*255.0/N_LEDS;
+
+	float first_section  = N_LEDS/3.0;
+	float second_section = N_LEDS*2.0/3.0;
+	float third_section  = N_LEDS;
+
+	float red_value;
+	float green_value;
+	float blue_value;
+	float aux_val;
+
+	uint32_t pixel;
+	uint32_t counter;
 
 	counter = step;
 
 	for(pixel = 0; pixel < N_LEDS; pixel ++)
 	{
-		if(counter <= (N_LEDS/2))
+		if(counter <= (uint32_t)first_section)
 		{
-			val = (uint32_t)((float)counter * ((float)255/(float)N_LEDS*(float)2));
-			rgb_array[pixel].r = (uint8_t)255-val;
-			rgb_array[pixel].g = (uint8_t)val;
-			rgb_array[pixel].b = 0;
+			aux_val     = (float)counter * led_scale;
+			aux_val 	= (aux_val > 255)? 255:aux_val;
+
+			red_value   = 255.0-aux_val;
+			green_value = aux_val;
+			blue_value  = 0.0;
+		}
+		else if(counter <= (uint32_t)second_section)
+		{
+			aux_val     = ((float)counter - first_section) * led_scale;
+			aux_val 	= (aux_val > 255)? 255:aux_val;
+
+			red_value   = 0.0;
+			green_value = 255 - aux_val;
+			blue_value  = aux_val;
 		}
 		else
 		{
-			val = (uint32_t)((((float)counter-((float)N_LEDS/(float)2)) * ((float)255/(float)N_LEDS*(float)2))-(float)2);
-			rgb_array[pixel].r = 0;
-			rgb_array[pixel].g = (uint8_t)255-val;
-			rgb_array[pixel].b = (uint8_t)val;
+			aux_val     = ((float)counter - second_section) * led_scale;
+			aux_val 	= (aux_val > 255)? 255:aux_val;
+
+			red_value   = aux_val;
+			green_value = 0.0;
+			blue_value  = 255 - aux_val;
 		}
-		rgb_array[pixel].r = (uint8_t)((uint32_t)rgb_array[pixel].r * (uint32_t)intensity / (uint32_t)255);
-		rgb_array[pixel].g = (uint8_t)((uint32_t)rgb_array[pixel].g * (uint32_t)intensity / (uint32_t)255);
-		rgb_array[pixel].b = (uint8_t)((uint32_t)rgb_array[pixel].b * (uint32_t)intensity / (uint32_t)255);
-    	counter = (counter < N_LEDS)? (counter + 1):0;
+		rgb_array[pixel].r = red_value;
+		rgb_array[pixel].g = green_value;
+		rgb_array[pixel].b = blue_value;
+		counter = (counter >= N_LEDS)? 0:(counter + 1);
 	}
 }
 
