@@ -11,7 +11,7 @@
  * Definitions
  ******************************************************************************/
 #define TCD_QUEUE_SIZE   1U
-#define EFFECT_DIV		 10
+#define EFFECT_DIV		 5
 /*******************************************************************************
  * Prototypes
  ******************************************************************************/
@@ -82,7 +82,7 @@ void go_back_read_white_effect(void)
 			55
 	};
 	static uint32_t step = 0;
-	static uint8_t state = 0;
+	static uint8_t state = 1;
 
 	led_ws2812b_fill_array_with_mirror_pattern( g_led_array,
 												step,
@@ -189,9 +189,9 @@ int main(void)
         		DMA_set_transfer();
         	    CTIMER_StartTimer(CTIMER0);
         	    //rainbow_effect();
-        	    //go_back_read_white_effect();
+        	    go_back_read_white_effect();
         	    //cyclic_read_withe_effect();
-       	        cyclic_red_green_blue_withe_effect();
+       	        //cyclic_red_green_blue_withe_effect();
         	    div = 0;
     	    }
     	    else

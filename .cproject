@@ -299,7 +299,7 @@
 								<option id="com.crt.advproject.link.gcc.lto.615564524" name="Enable Link-time optimization (-flto)" superClass="com.crt.advproject.link.gcc.lto"/>
 								<option id="com.crt.advproject.link.gcc.lto.optmization.level.1318207035" name="Link-time optimization level" superClass="com.crt.advproject.link.gcc.lto.optmization.level"/>
 								<option id="com.crt.advproject.link.manage.1336957996" name="Manage linker script" superClass="com.crt.advproject.link.manage" value="true" valueType="boolean"/>
-								<option id="com.crt.advproject.link.script.1881330648" name="Linker script" superClass="com.crt.advproject.link.script" value="digital_led_Debug.ld" valueType="string"/>
+								<option id="com.crt.advproject.link.script.1881330648" name="Linker script" superClass="com.crt.advproject.link.script" value="led_ws2812b_Debug.ld" valueType="string"/>
 								<option id="com.crt.advproject.link.scriptdir.1239595617" name="Script path" superClass="com.crt.advproject.link.scriptdir"/>
 								<option id="com.crt.advproject.link.crpenable.976652557" name="Enable automatic placement of Code Read Protection field in image" superClass="com.crt.advproject.link.crpenable"/>
 								<option id="com.crt.advproject.link.flashconfigenable.495028428" name="Enable automatic placement of Flash Configuration field in image" superClass="com.crt.advproject.link.flashconfigenable" value="true" valueType="boolean"/>
@@ -633,7 +633,7 @@
 								<option id="com.crt.advproject.link.gcc.lto.optmization.level.1362239836" name="Link-time optimization level" superClass="com.crt.advproject.link.gcc.lto.optmization.level"/>
 								<option id="com.crt.advproject.link.fpu.753725134" name="Floating point" superClass="com.crt.advproject.link.fpu" value="com.crt.advproject.link.fpu.fpv5sp.hard" valueType="enumerated"/>
 								<option id="com.crt.advproject.link.manage.49452425" name="Manage linker script" superClass="com.crt.advproject.link.manage" value="true" valueType="boolean"/>
-								<option id="com.crt.advproject.link.script.1763142823" name="Linker script" superClass="com.crt.advproject.link.script" value="digital_led_Release.ld" valueType="string"/>
+								<option id="com.crt.advproject.link.script.1763142823" name="Linker script" superClass="com.crt.advproject.link.script" value="led_ws2812b_Release.ld" valueType="string"/>
 								<option id="com.crt.advproject.link.scriptdir.1282938319" name="Script path" superClass="com.crt.advproject.link.scriptdir"/>
 								<option id="com.crt.advproject.link.crpenable.1796833612" name="Enable automatic placement of Code Read Protection field in image" superClass="com.crt.advproject.link.crpenable"/>
 								<option id="com.crt.advproject.link.flashconfigenable.839363145" name="Enable automatic placement of Flash Configuration field in image" superClass="com.crt.advproject.link.flashconfigenable" value="true" valueType="boolean"/>
