@@ -62,15 +62,20 @@ BOARD_InitPins:
 void BOARD_InitPins(void)
 {
     /* Enables the clock for PORT1: Enables clock */
+    CLOCK_EnableClock(kCLOCK_Port0);
     CLOCK_EnableClock(kCLOCK_Port1);
+    CLOCK_EnableClock(kCLOCK_Gpio0);
+    CLOCK_EnableClock(kCLOCK_Gpio1);
 
-    gpio_pin_config_t gpio_out =
+    gpio_pin_config_t gpio =
     {
     		kGPIO_DigitalOutput,
 			0
     };
 
-    GPIO_PinInit(GPIO1, 2, &gpio_out);
+    GPIO_PinInit(GPIO1, 2, &gpio);
+    gpio.pinDirection = kGPIO_DigitalInput;
+    GPIO_PinInit(GPIO0, 6, &gpio);
 
     const port_pin_config_t port1_8_pinA1_config = {/* Internal pull-up/down resistor is disabled */
                                                     kPORT_PullDisable,

@@ -6,25 +6,20 @@
 #include "led_WS2812B.h"
 #include "fsl_ctimer.h"
 #include "fsl_lptmr.h"
+#include "sweater.h"
 
 /*******************************************************************************
  * Definitions
  ******************************************************************************/
 #define TCD_QUEUE_SIZE   1U
-#define EFFECT_DIV		 5
+#define DEBAUNCER_DIV	 20
+
+#define START_MODE k_state_machine_efect_color_tree
 /*******************************************************************************
  * Prototypes
  ******************************************************************************/
 
-typedef enum _state_machine_efects_t
-{
-	k_state_machine_efect_breathing,
-	k_state_machine_efect_rainbow,
-	k_state_machine_efect_pattern,
-	k_state_machine_efect_mirror_pattern,
-	k_state_machine_efect_run,
-	k_state_machine_efect_kitt,
-} state_machine_efects_t;
+
 
 /*******************************************************************************
  * Variables
@@ -38,6 +33,8 @@ static led_ws2812b_rgb_t g_led_array[N_LEDS] = {0};
 // ----------------------------------------------------------------------------
 
 static uint8_t g_task_flag = 0;
+
+static state_machine_sweater_t g_effect = START_MODE;
 
 /*******************************************************************************
  * Code
@@ -61,109 +58,15 @@ void ctimer_init(void);
 void DMA_set_transfer(void);
 
 
-void rainbow_effect(void)
-{
-	static uint32_t step = 0;
-
-    led_ws2812b_fill_array_rainbow(g_led_array, step, 255);
-	step = (step < N_LEDS-1)? (step + 1):0;
-}
-
-void go_back_read_white_effect(void)
-{
-	const led_ws2812b_rgb_t color[] =
-	{
-			{.r = 255, .g = 255, .b = 255},
-			{.r = 255, .g = 0, .b = 0}
-	};
-	const uint32_t color_repeat[] =
-	{
-			20,
-			55
-	};
-	static uint32_t step = 0;
-	static uint8_t state = 1;
-
-	led_ws2812b_fill_array_with_mirror_pattern( g_led_array,
-												step,
-												(led_ws2812b_rgb_t*)color,
-												2,
-												(uint32_t*)color_repeat,
-												0,
-												1,
-												255);
-	if(state)
-	{
-		step ++;
-		state = (step >= (N_LEDS/2-1))? (!state):state;
-	}
-	else
-	{
-		step --;
-		state = (step <= 0)? (!state):state;
-	}
-}
-
-void cyclic_read_withe_effect(void)
-{
-	const led_ws2812b_rgb_t color[] =
-	{
-			{.r = 255, .g = 255, .b = 255},
-			{.r = 255, .g = 0, .b = 0}
-	};
-	const uint32_t color_repeat[] =
-	{
-			20,
-			55
-	};
-	static uint32_t step = 0;
-
-	led_ws2812b_fill_array_with_mirror_pattern( g_led_array,
-												step,
-												(led_ws2812b_rgb_t*)color,
-												2,
-												(uint32_t*)color_repeat,
-												1,
-												1,
-												255);
-	step = (step >= (N_LEDS/2-1))? 0:(step + 1);
-}
-
-void cyclic_red_green_blue_withe_effect(void)
-{
-	const led_ws2812b_rgb_t color[] =
-	{
-			{.r = 255, .g = 0, .b = 0},
-			{.r = 0, .g = 255, .b = 0},
-			{.r = 0, .g = 0, .b = 255}
-	};
-	const uint32_t color_repeat[] =
-	{
-			2,
-			2,
-			2
-	};
-	static uint32_t step = 0;
-
-	led_ws2812b_fill_array_with_mirror_pattern( g_led_array,
-												step,
-												(led_ws2812b_rgb_t*)color,
-												3,
-												(uint32_t*)color_repeat,
-												1,
-												1,
-												255);
-	step = (step >= (N_LEDS/2-1))? 0:(step + 1);
-}
-
-
 
 int main(void)
 {
-	state_machine_efects_t state = k_state_machine_efect_breathing;
 	uint32_t counter = 0;
 	uint32_t div = 0;
 	led_ws2812b_rgb_t color;
+	uint32_t efect_div = 0;
+	uint32_t debauncer_div = 0;
+	uint8_t btn_released = 1;
     BOARD_InitHardware();
 
     GPIO_EnablePinControlNonSecure(GPIO1_ALIAS1, 0x04);
@@ -183,15 +86,69 @@ int main(void)
     {
     	if(g_task_flag)
     	{
-    	    if(div >= EFFECT_DIV)
+    		if(debauncer_div >= DEBAUNCER_DIV)
+    		{
+    			if(GPIO_PinRead(GPIO0, 6)) btn_released = 1;
+    			if((!GPIO_PinRead(GPIO0, 6)) && btn_released)
+    			{
+    				if(g_effect < k_state_machine_efect_celebration) g_effect ++;
+    				else g_effect = 0;
+    				btn_released = 0;
+    			}
+    			debauncer_div = 0;
+    		}
+    		else
+    		{
+    			debauncer_div ++;
+    		}
+    	    if(div >= efect_div)
     	    {
         	    led_ws2812b_prepare_buff(g_led_array);
         		DMA_set_transfer();
         	    CTIMER_StartTimer(CTIMER0);
-        	    //rainbow_effect();
-        	    go_back_read_white_effect();
-        	    //cyclic_read_withe_effect();
-       	        //cyclic_red_green_blue_withe_effect();
+
+        	    switch(g_effect)
+        	    {
+					case k_state_machine_efect_color_tree:
+						effect_color_tree(g_led_array);
+						efect_div = 50;
+					break;
+
+					case k_state_machine_efect_wy_tree_1:
+						effect_wy_tree_1(g_led_array);
+						efect_div = 20;
+					break;
+
+					case k_state_machine_efect_wy_tree_2:
+						effect_wy_tree_2(g_led_array);
+						efect_div = 0;
+					break;
+
+					case k_state_machine_efect_epilepsia:
+						effect_epilepsia(g_led_array);
+						efect_div = 5;
+					break;
+
+					case k_state_machine_efect_white:
+						effect_white(g_led_array);
+						efect_div = 20;
+					break;
+
+					case k_state_machine_efect_spiral:
+						effect_spiral(g_led_array);
+						efect_div = 1;
+					break;
+
+					case k_state_machine_efect_rainbow:
+						effect_rainbow(g_led_array);
+						efect_div = 5;
+					break;
+
+					case k_state_machine_efect_celebration:
+						effect_celebration(g_led_array);
+						efect_div = 20;
+					break;
+        	    }
         	    div = 0;
     	    }
     	    else
@@ -226,7 +183,7 @@ void lptmr_init(void)
 
 	LPTMR_GetDefaultConfig(&lptmrConfig);
     LPTMR_Init(LPTMR0, &lptmrConfig);
-    LPTMR_SetTimerPeriod(LPTMR0, USEC_TO_COUNT(20000, 16000)); // 60Hz
+    LPTMR_SetTimerPeriod(LPTMR0, USEC_TO_COUNT(20000, 5000)); // 60Hz
     LPTMR_EnableInterrupts(LPTMR0, kLPTMR_TimerInterruptEnable);
     EnableIRQ(LPTMR0_IRQn);
     LPTMR_StartTimer(LPTMR0);
